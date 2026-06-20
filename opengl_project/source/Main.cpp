@@ -317,20 +317,21 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		tungtungSahurSpecMap.Bind2D();
 
+		// binds array we want to edit before for loop 
 		glBindVertexArray(VAO);
 		for (unsigned int i = 0; i < 10; i++)
 		{
 			// calculate the model matrix for each object and pass it to shader before drawing
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
+			model = glm::translate(model, cubePositions[i]); // translates model matrix to positon of cube
 			float angle = 20.0f * i;
 			if (i % 3 == 0)
-			{
+			{// every third cube spins
 				angle = currentFrame* 25.0f;
 			}
 			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			shaderProgramLighting.setMat4("model", model);
-
+			// draws cubes
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		};
@@ -340,8 +341,8 @@ int main() {
 		shaderProgramLightbulb.setMat4("view", view);
 		shaderProgramLightbulb.setMat4("projection", projection);
 
+		// binds array we want to edit before for loop 
 		glBindVertexArray(lightingVAO);
-
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			// moves the model matrix by vector, scales the lightbulb cube down to 0.2 times size
