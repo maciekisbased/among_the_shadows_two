@@ -174,8 +174,6 @@
     <ClInclude Include="libraries\include\textureLoader\textureClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libraries\include\glm\detail\dummy.cpp" />
-    <ClCompile Include="libraries\include\glm\detail\glm.cpp" />
     <ClCompile Include="source\cameraClass.cpp" />
     <ClCompile Include="source\fpsCameraClass.cpp" />
     <ClCompile Include="source\glad.c" />
