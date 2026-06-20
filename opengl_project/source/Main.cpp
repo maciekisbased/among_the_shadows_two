@@ -100,6 +100,26 @@ int main() {
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 
+	// positions all containers
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+	// positions of the point lights
+	glm::vec3 lightPositions[] = {
+		glm::vec3(0.7f,  0.2f,  2.0f),
+		glm::vec3(2.3f, -3.3f, -4.0f),
+		glm::vec3(-4.0f,  2.0f, -12.0f),
+		glm::vec3(0.0f,  0.0f, -3.0f)
+	};
 
 	// creates a pointer to a GLFWwindow object which contains information about the window
 	// contains the resolution of the window and the window name
@@ -129,8 +149,8 @@ int main() {
 	glViewport(0, 0, SCR_WIDTH, SCR_HIGHT);
 	
 	// uses shaderClass to generate shader program
-	Shader shaderProgramLighting("lightingCube.vert", "lightingCube.frag");
-	Shader shaderProgramLightbulb("lightingCube.vert", "light.frag");
+	Shader shaderProgramLighting("shaders/lightingCube.vert", "shaders/multiLight.frag");
+	Shader shaderProgramLightbulb("shaders/lightingCube.vert", "shaders/light.frag");
 
 	// stb loads the image from top left instead of top right so needs to be vertically flipped
 	stbi_set_flip_vertically_on_load(true);
@@ -174,9 +194,9 @@ int main() {
 
 	// loads texture using texture class
 	shaderProgramLighting.Activate();
-	Texture tungtungSahur("tttsahur.jpg");
+	Texture tungtungSahur("resources/tttsahur.jpg");
 
-	Texture tungtungSahurSpecMap("tttsahurSpecMap.jpg");
+	Texture tungtungSahurSpecMap("resources/tttsahurSpecMap.jpg");
 
 
 	// bind texture location
@@ -237,31 +257,59 @@ int main() {
 
 		// now send all the matricies to create 3d display
 
-		// position of light in scene
-		auto radius = 1.0f;
-		glm::vec3 lightPos = glm::vec3(radius * cos(currentFrame), radius * sin(currentFrame), 1.0f);
 
 		// uses the shader program and VAO and draws the triangle each frame
 		shaderProgramLighting.Activate();
 		// sets lighting color and object color to calculate final color of object in shader
-		shaderProgramLighting.setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
-		shaderProgramLighting.setVec3("light.diffuse", 0.6f, 0.6f, 0.6f);
-		shaderProgramLighting.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-		shaderProgramLighting.setVec3("light.Pos", lightPos); // diffuse lighting uses light pos
-		shaderProgramLighting.setVec3("viewPos", camera.Position); // view position is for specular lighting
 
-		shaderProgramLighting.setFloat("material.shininess", 64.0f);
+		// directional light
+		shaderProgramLighting.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		shaderProgramLighting.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		shaderProgramLighting.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		shaderProgramLighting.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+		// point light 1
+		shaderProgramLighting.setVec3("pointLights[0].position", lightPositions[0]);
+		shaderProgramLighting.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		shaderProgramLighting.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		shaderProgramLighting.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		shaderProgramLighting.setFloat("pointLights[0].constant", 1.0f);
+		shaderProgramLighting.setFloat("pointLights[0].linear", 0.09f);
+		shaderProgramLighting.setFloat("pointLights[0].quadratic", 0.032f);
+		// point light 2
+		shaderProgramLighting.setVec3("pointLights[1].position", lightPositions[1]);
+		shaderProgramLighting.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+		shaderProgramLighting.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+		shaderProgramLighting.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+		shaderProgramLighting.setFloat("pointLights[1].constant", 1.0f);
+		shaderProgramLighting.setFloat("pointLights[1].linear", 0.09f);
+		shaderProgramLighting.setFloat("pointLights[1].quadratic", 0.032f);
+		// point light 3
+		shaderProgramLighting.setVec3("pointLights[2].position", lightPositions[2]);
+		shaderProgramLighting.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+		shaderProgramLighting.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+		shaderProgramLighting.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+		shaderProgramLighting.setFloat("pointLights[2].constant", 1.0f);
+		shaderProgramLighting.setFloat("pointLights[2].linear", 0.09f);
+		shaderProgramLighting.setFloat("pointLights[2].quadratic", 0.032f);
+		// point light 4
+		shaderProgramLighting.setVec3("pointLights[3].position", lightPositions[3]);
+		shaderProgramLighting.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+		shaderProgramLighting.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+		shaderProgramLighting.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+		shaderProgramLighting.setFloat("pointLights[3].constant", 1.0f);
+		shaderProgramLighting.setFloat("pointLights[3].linear", 0.09f);
+		shaderProgramLighting.setFloat("pointLights[3].quadratic", 0.032f);
+		// sets the number of lights 
+		shaderProgramLighting.setInt("pointLightCount", 4);
+		// sets shininess and view direction
+		shaderProgramLighting.setVec3("viewPos", camera.Position);
+		shaderProgramLighting.setFloat("material.shininess", 32.0f);
 
 
-		
 		shaderProgramLighting.setMat4("view", view);
 		shaderProgramLighting.setMat4("projection", projection);
 
-		glm::mat4 model = glm::mat4(1.0f);
-		// position for 3d colored cube is set to 111
-		shaderProgramLighting.setMat4("model", model);
 
-		// set active diffuse texture
 		glActiveTexture(GL_TEXTURE0);
 		tungtungSahur.Bind2D();
 
@@ -269,28 +317,44 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		tungtungSahurSpecMap.Bind2D();
 
-
-		// draws cube
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		for (unsigned int i = 0; i < 10; i++)
+		{
+			// calculate the model matrix for each object and pass it to shader before drawing
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+			float angle = 20.0f * i;
+			if (i % 3 == 0)
+			{
+				angle = currentFrame* 25.0f;
+			}
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			shaderProgramLighting.setMat4("model", model);
 
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		};
 		// shader for light bulb is used
 		shaderProgramLightbulb.Activate();
 
 		shaderProgramLightbulb.setMat4("view", view);
 		shaderProgramLightbulb.setMat4("projection", projection);
 
-	
-		// moves the model matrix by vector, scales the lightbulb cube down to 0.2 times size
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f));
-
-		shaderProgramLightbulb.setMat4("model", model);
-		
-		// draws light
 		glBindVertexArray(lightingVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			// moves the model matrix by vector, scales the lightbulb cube down to 0.2 times size
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, lightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.2f));
+			
+			shaderProgramLightbulb.setMat4("model", model);
+
+			// draws light
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		}
 
 		
 		// binds vertex array to 0 to make sure nothing is edited after this point 

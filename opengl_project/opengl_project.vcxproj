@@ -302,6 +302,7 @@
     <None Include="shaders\light.frag" />
     <None Include="shaders\lightingCube.frag" />
     <None Include="shaders\lightingCube.vert" />
+    <None Include="shaders\multiLight.frag" />
     <None Include="shaders\pos.frag" />
     <None Include="shaders\pos.vert" />
     <None Include="shaders\texture.frag" />

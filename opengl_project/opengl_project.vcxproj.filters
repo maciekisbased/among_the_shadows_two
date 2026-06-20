@@ -156,8 +156,6 @@
     <ClInclude Include="libraries\include\textureLoader\textureClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libraries\include\glm\detail\dummy.cpp" />
-    <ClCompile Include="libraries\include\glm\detail\glm.cpp" />
     <ClCompile Include="source\cameraClass.cpp" />
     <ClCompile Include="source\fpsCameraClass.cpp" />
     <ClCompile Include="source\glad.c" />
@@ -292,6 +290,7 @@
     <None Include="shaders\texture.vert" />
     <None Include="shaders\texture3D.frag" />
     <None Include="shaders\texture3D.vert" />
+    <None Include="shaders\multiLight.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\boby.jpg" />
