@@ -1,4 +1,4 @@
-#include"shaderClass.h"
+#include"shader/shaderClass.h"
 
 
 std::string get_file_contents(const char* filename)
@@ -117,6 +117,20 @@ void Shader::setVec4(const std::string& name,
 { 
 	// changes uniform of type vec4
 	glUniform4f(getUniformLocation(name), x, y, z, w);
+}
+
+void Shader::setVec3(const std::string& name,
+	float x, float y, float z) const
+{
+	// changes uniform of type vec
+	glUniform3f(getUniformLocation(name), x, y, z);
+} 
+
+void Shader::setVec3(const std::string& name,
+	glm::vec3 value) const
+{
+	// changes uniform of type vec
+	glUniform3fv(getUniformLocation(name), 1, &value[0]);
 }
 
 void Shader::setInt(const std::string& name, int value) const
