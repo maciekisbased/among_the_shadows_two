@@ -1,11 +1,11 @@
-#include "cameraClass.h"
+#include "Cameras/fpsCameraClass.h"
 
-Camera::Camera(glm::vec3 position, glm::vec3 up) : MouseSensitivity(SENSITIVITY), Yaw(YAW), Pitch(PITCH), Position(position), WalkingSpeed(WALKING_SPEED), RunningSpeed(RUNNING_SPEED), Zoom(ZOOM), WorldUp(up) 
+FPSCamera::FPSCamera(glm::vec3 position, glm::vec3 up) : MouseSensitivity(SENSITIVITY), Yaw(YAW), Pitch(PITCH), Position(position), WalkingSpeed(WALKING_SPEED), RunningSpeed(RUNNING_SPEED), Zoom(ZOOM), WorldUp(up)
 {
 	updateCameraVectors();
 }
 
-void Camera::ProcessMouseScroll(float yoffset)
+void FPSCamera::ProcessMouseScroll(float yoffset)
 {// - so when you scorll out it zooms
 	Zoom -= (float)yoffset;
 	// checks so you can only zoom in a certain amount
@@ -15,7 +15,7 @@ void Camera::ProcessMouseScroll(float yoffset)
 		Zoom = 45.0f;
 }
 
-void Camera::ProcessKeyboaurdInput(Camera_Movement Direction, Camera_Speed Speed ,float deltaTime)
+void FPSCamera::ProcessKeyboaurdInput(Camera_Movement Direction, Camera_Speed Speed, float deltaTime)
 {
 	float velocity = 0.0f;
 
@@ -33,9 +33,10 @@ void Camera::ProcessKeyboaurdInput(Camera_Movement Direction, Camera_Speed Speed
 		Position += Front * velocity;
 	if (Direction == BACKWARD)
 		Position -= Front * velocity;
+	Position.y = 0.0f; // this stops you from being able to move up or down
 }
 
-void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
+void FPSCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
 {	// offset scaled with sensitiviy
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
@@ -44,7 +45,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 	Yaw += xoffset;
 	Pitch += yoffset;
 
-	if (constrainPitch) 
+	if (constrainPitch)
 	{// stops you from being able to look past 90 degrees up or down
 		if (Pitch > 89.0f)
 			Pitch = 89.0f;
@@ -53,16 +54,16 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 	}
 	// changes the basis for matrix calculation with new yaw and pitch values
 	updateCameraVectors();
-		
+
 }
 
-glm::mat4 Camera::GetViewMatrix()
+glm::mat4 FPSCamera::GetViewMatrix()
 {
 	return glm::lookAt(Position, Position + Front, Up); // returns view matrix
 }
 
 
-void Camera::updateCameraVectors()
+void FPSCamera::updateCameraVectors()
 {
 	// sets front vector as initial pointing position of camera which is calculated with Yaw and Pitch values
 	glm::vec3 front;
