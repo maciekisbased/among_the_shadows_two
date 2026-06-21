@@ -38,20 +38,26 @@ struct PointLight
 	
 };
 
-/*
-struct SpotLight;
+
+struct SpotLight
 {
 	vec3 position;
 	vec3 direction;
 
-	float cutOff;
+	float innerCutOff;
+	float outerCutOff;
 
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 
+	// constant linear and quadratic terms for calculating light attenuation
+	float constant;
+	float linear;
+	float quadratic;
+
 };
-*/
+
 
 in vec3 Normal;
 in vec3 FragPos;
@@ -66,6 +72,7 @@ uniform int pointLightCount; // number of point lights being used
 uniform Material material;
 uniform vec3 viewPos;
 uniform DirLight dirLight;
+uniform SpotLight spotLight;
 
 
 vec3 CalculateDirectional(DirLight light, vec3 norm, vec3 viewDir)
@@ -128,12 +135,47 @@ vec3 CalculatePointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 fragPos
 
 }
 
-/*
-vec3 CalculateSpotlight()
+
+vec3 CalculateSpotlight(SpotLight light, vec3 norm, vec3 viewDir, vec3 fragPos)
 {
+	
+	vec3 lightDir = normalize(light.position - fragPos);
+	float epsilon = light.innerCutOff - light.outerCutOff;
+
+	
+	// lightDir is the direction of light ray and light.direction is the facing point of camera
+	float theta = dot(lightDir, normalize(-light.direction)); 
+
+	// ambient light
+	vec3 ambient = light.ambient * texture(material.diffuse, TexCoord).rgb;
+
+	// diffuse light
+	float diff = max(dot(norm, lightDir), 0.0); 
+	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoord).rgb;
+
+	// specular light
+	vec3 reflectDir = reflect(-lightDir, norm); // direction of reflected light (using normalized normal)
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	vec3 specular = light.specular * spec * texture(material.specular, TexCoord).rgb;
+
+	// attenuation values
+	float distance    = length(light.position - fragPos);
+	float attenuation = 1.0 / (light.constant + light.linear * distance + 
+  				light.quadratic * (distance * distance)); 
+	
+	// past certain angle light becomes weaker intensity between 0 and 1
+	float intensity = clamp((theta - light.outerCutOff)/epsilon,0.0,1.0);
+
+	// changes strength of light based of attenuation (distance from point source) and intensity 
+	ambient  *= attenuation;
+	diffuse  *= (attenuation * intensity);
+	specular *= (attenuation * intensity);
+
+	return(specular + ambient + diffuse); // returns light values as vec3
+
 
 }
-*/
+
 
 
 void main()
@@ -149,6 +191,8 @@ void main()
 	{
 		result += CalculatePointLight(pointLights[i], norm, viewDir, FragPos);
 	}
+
+	result += CalculateSpotlight(spotLight, norm, viewDir, FragPos);
 
 	FragColor = vec4(result, 1.0);
 

@@ -10,26 +10,33 @@
 
 
 void processInput(GLFWwindow* window);
-// mouse callback function and scroll callback
+// mouse callback function, keyboaurd callback and scroll callback
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
-const auto SCR_HIGHT = 600u;
-const auto SCR_WIDTH = 800u;
+const unsigned int SCR_HIGHT = 600u;
+const unsigned int SCR_WIDTH = 800u;
+
+// flashlight starts as off
+bool flashlightOn = false;
+
+// buffer for if f key is held down
+bool heldDown = false;
 
 
 // oppacity of images put together 
-auto oppacity = 0.2f;
+float oppacity = 0.2f;
 
 // variables to track time between frames
 // makes sure movement is not frame rate dependent 
-auto deltaTime = 0.0f;
-auto lastFrame = 0.0f;
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 // for first mouse detection event first mouse = true (used in mouse callback function)
-auto firstMouse = true;
-auto lastX = SCR_WIDTH / 2.0f, lastY = SCR_HIGHT / 2.0f;
+bool firstMouse = true;
+float lastX = SCR_WIDTH / 2.0f, lastY = SCR_HIGHT / 2.0f;
 
 
 // globals for camera controls
@@ -141,6 +148,8 @@ int main() {
 	glfwSetCursorPosCallback(window, mouse_callback);
 	// sets mouse scroll callback function that activates everytime you scroll
 	glfwSetScrollCallback(window, scroll_callback);
+	// sets keybourd callback function that activates everytime you press a keybourd button
+	glfwSetKeyCallback(window, key_callback);
 	
 	// loads glad so it configures OpenGL
 	gladLoadGL();
@@ -299,7 +308,34 @@ int main() {
 		shaderProgramLighting.setFloat("pointLights[3].constant", 1.0f);
 		shaderProgramLighting.setFloat("pointLights[3].linear", 0.09f);
 		shaderProgramLighting.setFloat("pointLights[3].quadratic", 0.032f);
-		// sets the number of lights 
+		// spotlight
+		shaderProgramLighting.setVec3("spotLight.position", camera.Position);
+		shaderProgramLighting.setVec3("spotLight.direction", camera.Front);
+
+		switch (flashlightOn)
+		{
+		case true:
+			shaderProgramLighting.setVec3("spotLight.ambient", 0.05f, 0.05f, 0.05f);
+			shaderProgramLighting.setVec3("spotLight.diffuse", 0.8f, 0.8f, 0.8f);
+			shaderProgramLighting.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		
+			break;
+
+		case false:
+			// if false then spotlight values are 0
+			shaderProgramLighting.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+			shaderProgramLighting.setVec3("spotLight.diffuse", 0.0f, 0.0f, 0.0f);
+			shaderProgramLighting.setVec3("spotLight.specular", 0.0f, 0.0f, 0.0f);
+			break;
+				
+		}
+	
+		shaderProgramLighting.setFloat("spotLight.constant", 1.0f);
+		shaderProgramLighting.setFloat("spotLight.linear", 0.09f);
+		shaderProgramLighting.setFloat("spotLight.quadratic", 0.032f);
+		shaderProgramLighting.setFloat("spotLight.innerCutOff", glm::cos(glm::radians(10.5f)));
+		shaderProgramLighting.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(16.5f)));
+		// sets the number of  point lights 
 		shaderProgramLighting.setInt("pointLightCount", 4);
 		// sets shininess and view direction
 		shaderProgramLighting.setVec3("viewPos", camera.Position);
@@ -426,6 +462,7 @@ void processInput(GLFWwindow* window)
 		
 			
 	}
+
 	
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT))  
 		// if else for cheking directional movment with sprinting or walking
@@ -531,5 +568,35 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	camera.ProcessMouseScroll(yoffset);
 }
 
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_F && action == GLFW_PRESS)
+	{ // stops the flashlight from continually turning on and off when key is held down with the
+		// heldDown buffer bool variable
+
+		switch (heldDown)
+		{
+		case false:
+
+			flashlightOn = !flashlightOn;
+		
+			heldDown = true;
+			
+			break;
+
+		case true:
+
+			break;
+
+		}
+	}
+
+	if (key == GLFW_KEY_F && action == GLFW_RELEASE)
+	{
+		heldDown = false;
+	}
+
+}
 
 
