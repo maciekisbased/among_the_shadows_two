@@ -13,14 +13,16 @@ class Texture
 public:
 
 	GLenum colorFormat;
-	GLuint texture;
+	GLuint ID;
+	GLuint unit;
+	const char* type;
 	int width, height, nrChannels;
 
-	Texture(std::string fileName);
-
+	Texture(std::string fileName, const char* texType, GLuint slot);
 
 	void Delete() const;
-	void Bind2D() const;
+	void Bind() const;
+	void Unbind() const;
 
 
 };

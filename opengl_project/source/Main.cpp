@@ -1,13 +1,7 @@
-#include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "shader/shaderClass.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "Cameras/cameraClass.h"
-#include "textureLoader/textureClass.h"
-
+#include "mesh/meshClass.h"
 
 void processInput(GLFWwindow* window);
 // mouse callback function, keyboaurd callback and scroll callback
@@ -62,50 +56,56 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-	float cube[] = {
-		// positions	  // normal				// texture
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+	Vertex cube[] = {
+		// positions                                // normal                   // texture
+		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,  0.0f) },
 
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,  0.0f) },
 
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
 
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
 
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
-};
+		Vertex{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(1.0f,  1.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(1.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
+	};
+
+	GLuint indices[] = {
+
+		0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,
+		24,25,26,27,28,29,30,31,32,33,34,35
+	};
 
 	// positions all containers
 	glm::vec3 cubePositions[] = {
@@ -131,7 +131,7 @@ int main() {
 	// creates a pointer to a GLFWwindow object which contains information about the window
 	// contains the resolution of the window and the window name
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HIGHT, "OpenGL window", NULL, NULL);
-	
+
 	//error check if the window fails to create
 	if (window == NULL) {
 		std::cout << "Failed to create window " << std::endl;
@@ -150,78 +150,40 @@ int main() {
 	glfwSetScrollCallback(window, scroll_callback);
 	// sets keybourd callback function that activates everytime you press a keybourd button
 	glfwSetKeyCallback(window, key_callback);
-	
+
 	// loads glad so it configures OpenGL
 	gladLoadGL();
 
 	// bottom left to bottom right of window
 	glViewport(0, 0, SCR_WIDTH, SCR_HIGHT);
-	
-	// uses shaderClass to generate shader program
-	Shader shaderProgramLighting("shaders/lightingCube.vert", "shaders/multiLight.frag");
-	Shader shaderProgramLightbulb("shaders/lightingCube.vert", "shaders/light.frag");
+
 
 	// stb loads the image from top left instead of top right so needs to be vertically flipped
 	stbi_set_flip_vertically_on_load(true);
 
-	// lets make vertex buffer object to send to gpu
-	// two seperate vaos and vbos for triangles
-	GLuint VAO, VBO, EBO, lightingVAO;
-	//generates vertex array before generating buffers
-	glGenVertexArrays(1, &lightingVAO);
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
 
-	// setup for rectangle
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-	
-	// Attribute pointer for position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	// Attribute pointer for normal of faces
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	// Attribute pointer for the texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	Texture textures[] =
+	{ // creates texture array needed for mesh 
+		Texture("resources/tttsahur.jpg", "diffuse", 0),
+		Texture("resources/tttsahurSpecMap.jpg", "specular", 1)
+	};
 
 
-	// binds VBO to lighting VAO
-	glBindVertexArray(lightingVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// uses shaderClass to generate shader program
+	Shader shaderProgramLighting("shaders/lightingCube.vert", "shaders/multiLight.frag");
+	std::vector <Vertex> verts(cube, cube + sizeof(cube) / sizeof(Vertex));
+	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	Mesh box(verts, ind, tex);
 
-	// Attribute pointer for position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-
-
-	// loads texture using texture class
-	shaderProgramLighting.Activate();
-	Texture tungtungSahur("resources/tttsahur.jpg");
-
-	Texture tungtungSahurSpecMap("resources/tttsahurSpecMap.jpg");
-
-
-	// bind texture location
-	shaderProgramLighting.setInt("material.diffuse", 0);
-
-	// bind texture location for spec map
-	shaderProgramLighting.setInt("material.specular", 1);
-
-	
-
+	Shader shaderProgramLightbulb("shaders/lightingCube.vert", "shaders/light.frag");
+	std::vector <Texture> lTex;
+	Mesh lightBox(verts, ind, lTex);
 
 	
 	// Enables openGL to check if something is in front of something else using depth testing before rendering
 	// enables z buffer 
 	glEnable(GL_DEPTH_TEST); 
-
 
 
 	// while the window is not being closed events are polled to ensure the window doesent close instantly
@@ -345,16 +307,6 @@ int main() {
 		shaderProgramLighting.setMat4("view", view);
 		shaderProgramLighting.setMat4("projection", projection);
 
-
-		glActiveTexture(GL_TEXTURE0);
-		tungtungSahur.Bind2D();
-
-		// set active specmap texture
-		glActiveTexture(GL_TEXTURE1);
-		tungtungSahurSpecMap.Bind2D();
-
-		// binds array we want to edit before for loop 
-		glBindVertexArray(VAO);
 		for (unsigned int i = 0; i < 10; i++)
 		{
 			// calculate the model matrix for each object and pass it to shader before drawing
@@ -367,9 +319,8 @@ int main() {
 			}
 			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			shaderProgramLighting.setMat4("model", model);
-			// draws cubes
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
+			
+			box.Draw(shaderProgramLighting);
 		};
 		// shader for light bulb is used
 		shaderProgramLightbulb.Activate();
@@ -377,8 +328,6 @@ int main() {
 		shaderProgramLightbulb.setMat4("view", view);
 		shaderProgramLightbulb.setMat4("projection", projection);
 
-		// binds array we want to edit before for loop 
-		glBindVertexArray(lightingVAO);
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			// moves the model matrix by vector, scales the lightbulb cube down to 0.2 times size
@@ -388,15 +337,9 @@ int main() {
 			
 			shaderProgramLightbulb.setMat4("model", model);
 
-			// draws light
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
+			lightBox.Draw(shaderProgramLightbulb);
 		}
 
-		
-		// binds vertex array to 0 to make sure nothing is edited after this point 
-		glBindVertexArray(0);
-		
 		// swaps buffers so you can see triangles
 		glfwSwapBuffers(window);
 
@@ -407,12 +350,9 @@ int main() {
 
 
 	// deletes the vertex array, buffer and shader program after it is no longer being used
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteVertexArrays(1, &lightingVAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	
 	shaderProgramLighting.Delete();
-	tungtungSahur.Delete();
+	shaderProgramLightbulb.Delete();
 
 
 	// destroys the window and terminates GLFW before ending the program 

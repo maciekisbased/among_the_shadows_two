@@ -1,9 +1,12 @@
 #include "textureLoader/textureClass.h"
 
 
-Texture::Texture(std::string fileName) 
+Texture::Texture(std::string fileName, const char* texType, GLuint slot) 
 {
-	glGenTextures(1, &texture);
+	glGenTextures(1, &ID);
+
+	// sets the texture type (specular of diffuse)
+	type = texType;
 	
 	// load and generate the texture
 	unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrChannels, 0);
@@ -33,7 +36,10 @@ Texture::Texture(std::string fileName)
 
 	if (data)
 	{
-		glBindTexture(GL_TEXTURE_2D, texture);
+		// assigns the texture to a texture unit
+		glActiveTexture(GL_TEXTURE0 + slot);
+		unit = slot;
+		glBindTexture(GL_TEXTURE_2D, ID);
 		glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
@@ -51,12 +57,18 @@ Texture::Texture(std::string fileName)
 
 }
 
-void Texture::Bind2D() const
-{ // binds texture
-	glBindTexture(GL_TEXTURE_2D, texture);
+void Texture::Bind() const
+{ // binds texture to slected active texture
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_2D, ID);
+}
+
+void Texture::Unbind() const
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::Delete() const
 {
-	glDeleteTextures(1, &texture);
+	glDeleteTextures(1, &ID);
 }

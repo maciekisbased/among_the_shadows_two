@@ -154,6 +154,7 @@
     <ClInclude Include="libraries\include\shader\shaderClass.h" />
     <ClInclude Include="libraries\include\stb\stb_image.h" />
     <ClInclude Include="libraries\include\textureLoader\textureClass.h" />
+    <ClInclude Include="libraries\include\mesh\meshClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\cameraClass.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="source\shaderClass.cpp" />
     <ClCompile Include="source\stb.cpp" />
     <ClCompile Include="source\textureClass.cpp" />
+    <ClCompile Include="source\meshClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libraries\include\glm\detail\func_common.inl" />
