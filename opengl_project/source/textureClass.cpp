@@ -1,12 +1,18 @@
 #include "textureLoader/textureClass.h"
 
 
-Texture::Texture(std::string fileName, const char* texType, GLuint slot) 
+Texture::Texture(const char* path, const char* texType, 
+	const std::string& directory, GLuint slot)
 {
 	glGenTextures(1, &ID);
 
 	// sets the texture type (specular of diffuse)
 	type = texType;
+	// path is the filename
+	this -> path = path;
+
+	std::string fileName = std::string(path);
+	fileName = directory + "/" + path;
 	
 	// load and generate the texture
 	unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrChannels, 0);

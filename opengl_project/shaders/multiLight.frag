@@ -101,7 +101,6 @@ vec3 CalculateDirectional(DirLight light, vec3 norm, vec3 viewDir)
 }
 
 
-// maybe calculate point light and calculate directional light can be made into one function 
 vec3 CalculatePointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 fragPos)
 {
 	// normalized light direction based on light and Frag position
@@ -180,8 +179,6 @@ vec3 CalculateSpotlight(SpotLight light, vec3 norm, vec3 viewDir, vec3 fragPos)
 
 void main()
 {
-	
-	
 	vec3 norm = normalize(Normal);
 	vec3 viewDir = normalize(viewPos - FragPos);
 

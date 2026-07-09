@@ -15,10 +15,11 @@ public:
 	GLenum colorFormat;
 	GLuint ID;
 	GLuint unit;
+	const char* path;
 	const char* type;
 	int width, height, nrChannels;
 
-	Texture(std::string fileName, const char* texType, GLuint slot);
+	Texture(const char* path, const char* texType, const std::string& directory, GLuint slot);
 
 	void Delete() const;
 	void Bind() const;

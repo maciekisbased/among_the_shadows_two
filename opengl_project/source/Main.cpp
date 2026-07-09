@@ -1,7 +1,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "mesh/meshClass.h"
+//#include "mesh/meshClass.h"
+#include "model/modelClass.h"
+
+#include <iostream>
 
 void processInput(GLFWwindow* window);
 // mouse callback function, keyboaurd callback and scroll callback
@@ -164,8 +167,8 @@ int main() {
 
 	Texture textures[] =
 	{ // creates texture array needed for mesh 
-		Texture("resources/tttsahur.jpg", "diffuse", 0),
-		Texture("resources/tttsahurSpecMap.jpg", "specular", 1)
+		Texture("tttsahur.jpg", "diffuse", "resources" , 0),
+		Texture("tttsahurSpecMap.jpg", "specular", "resources", 1)
 	};
 
 
@@ -179,6 +182,10 @@ int main() {
 	Shader shaderProgramLightbulb("shaders/lightingCube.vert", "shaders/light.frag");
 	std::vector <Texture> lTex;
 	Mesh lightBox(verts, ind, lTex);
+
+	Shader shaderProgramModel("shaders/model.vert", "shaders/model.frag");
+
+	Model ourModel(std::string("resources/models/ttt_sahur/scene.gltf"));
 
 	
 	// Enables openGL to check if something is in front of something else using depth testing before rendering
@@ -339,6 +346,19 @@ int main() {
 
 			lightBox.Draw(shaderProgramLightbulb);
 		}
+
+
+		shaderProgramModel.Activate();
+
+		shaderProgramModel.setMat4("view", view);
+		shaderProgramModel.setMat4("projection", projection);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		shaderProgramModel.setMat4("model", model);
+		ourModel.Draw(shaderProgramModel);
+
 
 		// swaps buffers so you can see triangles
 		glfwSwapBuffers(window);

@@ -60,7 +60,7 @@ void Mesh::Draw(Shader& shader)
 			number = std::to_string(specularNr++);
 
 
-		shader.setInt(("material." + textureType + number).c_str(), i);
+		//shader.setInt(("material." + textureType + number).c_str(), i);
 		textures[i].Bind();
 	}
 	
