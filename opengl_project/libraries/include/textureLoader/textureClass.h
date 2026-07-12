@@ -14,15 +14,15 @@ public:
 
 	GLenum colorFormat;
 	GLuint ID;
-	GLuint unit;
+	//GLuint unit;  now not using uints instead bind must assign a slot
 	const char* path;
-	const char* type;
+	std::string type;
 	int width, height, nrChannels;
 
-	Texture(const char* path, const char* texType, const std::string& directory, GLuint slot);
+	Texture(const char* path, std::string texType, const std::string& directory, GLuint slot);
 
 	void Delete() const;
-	void Bind() const;
+	void Bind(GLuint slot) const;
 	void Unbind() const;
 
 

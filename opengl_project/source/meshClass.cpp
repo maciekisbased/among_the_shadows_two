@@ -51,18 +51,22 @@ void Mesh::Draw(Shader& shader)
 	// for shader with no texture if texture vector is empty then no texture is assigned
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{	// format for texures is textureType then number e.g diffuse0, specular3 ect
+		glActiveTexture(GL_TEXTURE0 + i);
+
 		std::string textureType = textures[i].type;
 		std::string number;
 
-		if (textureType == "diffuse") // sets number to the current number of diffuse texures and incriments
+		if (textureType == "texture_diffuse") // sets number to the current number of diffuse texures and incriments
 			number = std::to_string(diffuseNr++);
-		else if (textureType == "specular") // sets number to the current number of specular textures and incriments
+		
+		else if (textureType == "texture_specular") // sets number to the current number of specular textures and incriments
 			number = std::to_string(specularNr++);
-
-
-		//shader.setInt(("material." + textureType + number).c_str(), i);
-		textures[i].Bind();
+			
+		textures[i].Bind(i); // binds the specular and diffuse textures to different units
+		shader.setInt(("material." + textureType + number).c_str(), i); 
+		// assumed texture_diffuse/specular(number) for format of uniforms
 	}
+
 	
 	// draw mesh using indices
 	glBindVertexArray(VAO);

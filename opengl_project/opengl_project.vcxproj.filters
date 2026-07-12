@@ -280,34 +280,26 @@
     <None Include="libraries\include\glm\gtx\vector_angle.inl" />
     <None Include="libraries\include\glm\gtx\vector_query.inl" />
     <None Include="libraries\include\glm\gtx\wrap.inl" />
-    <None Include="shaders\blackToGreen.frag" />
-    <None Include="shaders\color.frag" />
-    <None Include="shaders\color.vert" />
-    <None Include="shaders\default.vert" />
-    <None Include="shaders\default.frag" />
     <None Include="shaders\light.frag" />
     <None Include="shaders\lightingCube.vert" />
     <None Include="shaders\lightingCube.frag" />
-    <None Include="shaders\pos.frag" />
-    <None Include="shaders\pos.vert" />
-    <None Include="shaders\texture.frag" />
-    <None Include="shaders\texture.vert" />
-    <None Include="shaders\texture3D.frag" />
-    <None Include="shaders\texture3D.vert" />
     <None Include="shaders\multiLight.frag" />
     <None Include="shaders\model.vert" />
     <None Include="shaders\model.frag" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\boby.jpg" />
-    <Image Include="resources\field.jpg" />
-    <Image Include="resources\god.PNG" />
-    <Image Include="resources\Image.jpg" />
-    <Image Include="resources\its_sahur_over.png" />
-    <Image Include="resources\tttsahur.jpg" />
-    <Image Include="resources\tttsahurSpecMap.jpg" />
-    <Image Include="resources\xin_pao.jpg" />
-    <Image Include="resources\xin_pao_big.png" />
+    <Image Include="resources\textures\field.jpg" />
+    <Image Include="resources\textures\god.PNG" />
+    <Image Include="resources\textures\Image.jpg" />
+    <Image Include="resources\textures\its_sahur_over.png" />
+    <Image Include="resources\textures\tttsahur.jpg" />
+    <Image Include="resources\textures\tttsahurSpecMap.jpg" />
+    <Image Include="resources\textures\xin_pao.jpg" />
+    <Image Include="resources\textures\xin_pao_big.png" />
+    <Image Include="D:\downloads\sun.png" />
+    <Image Include="resources\textures\floor_diff.jpg" />
+    <Image Include="resources\textures\floor_spec.png" />
+    <Image Include="resources\textures\sun.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\verticies.txt" />

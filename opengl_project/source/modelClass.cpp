@@ -107,7 +107,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		std::vector<Texture> specularMaps = loadMaterialTextures(material,
 			aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-	
 	}
 
 	return Mesh(vertices, indices, textures);
@@ -126,18 +125,20 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 
 		for (unsigned int j = 0; j < loadedTextures.size(); j++)
 		{
-			if (std::strcmp(loadedTextures[j].path, str.C_Str()) == 0) // checks if textures loaded same as current texure being processed
+			if (std::strcmp(loadedTextures[j].path, str.C_Str()) == 0 &&
+				loadedTextures[j].type == typeName)
 			{
 				textures.push_back(loadedTextures[j]);
 				skip = true;
 				break;
 			}
-
 		}
 
 		if (!skip)
 		{
-			Texture texture(str.C_Str(), typeName.c_str(), this->directory, 0); // texture constructor assigns
+			std::cout << "Loaded texture: " << str.C_Str() // prings which textures and what type was loaded
+				<< " type: " << typeName << std::endl;
+			Texture texture(str.C_Str(), typeName, this->directory, 0); // texture constructor assigns
 			// type as const char*, typeName as const char* and path as const char*
 			textures.push_back(texture);
 			loadedTextures.push_back(texture); // adds to loaded texture

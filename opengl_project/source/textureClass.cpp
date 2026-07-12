@@ -1,7 +1,7 @@
 #include "textureLoader/textureClass.h"
 
 
-Texture::Texture(const char* path, const char* texType, 
+Texture::Texture(const char* path, std::string texType, 
 	const std::string& directory, GLuint slot)
 {
 	glGenTextures(1, &ID);
@@ -16,6 +16,9 @@ Texture::Texture(const char* path, const char* texType,
 	
 	// load and generate the texture
 	unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrChannels, 0);
+
+	if (!data)
+		throw std::runtime_error("FAILED::TO::LOAD::IMAGE: " + fileName); // check if file fails to load
 
 	switch (nrChannels)
 	{ // switch statement to verify the number of color channels the image uses so the correct channel
@@ -44,7 +47,6 @@ Texture::Texture(const char* path, const char* texType,
 	{
 		// assigns the texture to a texture unit
 		glActiveTexture(GL_TEXTURE0 + slot);
-		unit = slot;
 		glBindTexture(GL_TEXTURE_2D, ID);
 		glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -63,9 +65,9 @@ Texture::Texture(const char* path, const char* texType,
 
 }
 
-void Texture::Bind() const
+void Texture::Bind(GLuint slot) const
 { // binds texture to slected active texture
-	glActiveTexture(GL_TEXTURE0 + unit);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, ID);
 }
 
