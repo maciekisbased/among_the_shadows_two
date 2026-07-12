@@ -1,7 +1,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "mesh/meshClass.h"
+//#include "mesh/meshClass.h"
+#include "model/modelClass.h"
+
+#include <iostream>
 
 void processInput(GLFWwindow* window);
 // mouse callback function, keyboaurd callback and scroll callback
@@ -56,6 +59,39 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
+	// creates a pointer to a GLFWwindow object which contains information about the window
+	// contains the resolution of the window and the window name
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HIGHT, "OpenGL window", NULL, NULL);
+
+	//error check if the window fails to create
+	if (window == NULL) {
+		std::cout << "Failed to create window " << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+
+	// adds the window into the current context
+	glfwMakeContextCurrent(window);
+
+	// sets static fps cursor when on application
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// sets mouse callback function, this function gets called everytime mouse input is detected
+	glfwSetCursorPosCallback(window, mouse_callback);
+	// sets mouse scroll callback function that activates everytime you scroll
+	glfwSetScrollCallback(window, scroll_callback);
+	// sets keybourd callback function that activates everytime you press a keybourd button
+	glfwSetKeyCallback(window, key_callback);
+
+	// loads glad so it configures OpenGL
+	gladLoadGL();
+
+	// bottom left to bottom right of window
+	glViewport(0, 0, SCR_WIDTH, SCR_HIGHT);
+
+
+	// stb loads the image from top left instead of top right so needs to be vertically flipped
+	stbi_set_flip_vertically_on_load(true);
+
 	Vertex cube[] = {
 		// positions                                // normal                   // texture
 		Vertex{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,  0.0f) },
@@ -101,85 +137,49 @@ int main() {
 		Vertex{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,  1.0f) },
 	};
 
-	GLuint indices[] = {
+	GLuint indicesBox[] = {
 
 		0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,
 		24,25,26,27,28,29,30,31,32,33,34,35
 	};
 
-	// positions all containers
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
-	// positions of the point lights
-	glm::vec3 lightPositions[] = {
-		glm::vec3(0.7f,  0.2f,  2.0f),
-		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		glm::vec3(0.0f,  0.0f, -3.0f)
+	Vertex square[] = {
+		// position                          // normal                // tex coords
+		Vertex{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) }
 	};
 
-	// creates a pointer to a GLFWwindow object which contains information about the window
-	// contains the resolution of the window and the window name
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HIGHT, "OpenGL window", NULL, NULL);
-
-	//error check if the window fails to create
-	if (window == NULL) {
-		std::cout << "Failed to create window " << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	// adds the window into the current context
-	glfwMakeContextCurrent(window);
-
-	// sets static fps cursor when on application
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	// sets mouse callback function, this function gets called everytime mouse input is detected
-	glfwSetCursorPosCallback(window, mouse_callback);
-	// sets mouse scroll callback function that activates everytime you scroll
-	glfwSetScrollCallback(window, scroll_callback);
-	// sets keybourd callback function that activates everytime you press a keybourd button
-	glfwSetKeyCallback(window, key_callback);
-
-	// loads glad so it configures OpenGL
-	gladLoadGL();
-
-	// bottom left to bottom right of window
-	glViewport(0, 0, SCR_WIDTH, SCR_HIGHT);
-
-
-	// stb loads the image from top left instead of top right so needs to be vertically flipped
-	stbi_set_flip_vertically_on_load(true);
-
-
-	Texture textures[] =
-	{ // creates texture array needed for mesh 
-		Texture("resources/tttsahur.jpg", "diffuse", 0),
-		Texture("resources/tttsahurSpecMap.jpg", "specular", 1)
+	GLuint indicesSquare[] = {
+	0, 1, 2,
+	2, 3, 0
 	};
 
-
-	// uses shaderClass to generate shader program
-	Shader shaderProgramLighting("shaders/lightingCube.vert", "shaders/multiLight.frag");
+	Texture textures[] = {
+	Texture("floor_diff.jpg", "texture_diffuse", "resources/textures", 0),
+	Texture("floor_spec.png", "texture_specular", "resources/textures", 1)
+	};
+	
 	std::vector <Vertex> verts(cube, cube + sizeof(cube) / sizeof(Vertex));
-	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
-	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-	Mesh box(verts, ind, tex);
-
-	Shader shaderProgramLightbulb("shaders/lightingCube.vert", "shaders/light.frag");
+	std::vector <GLuint> ind(indicesBox, indicesBox + sizeof(indicesBox) / sizeof(GLuint));
 	std::vector <Texture> lTex;
-	Mesh lightBox(verts, ind, lTex);
 
+	std::vector <Vertex> vertsSquare(square, square + sizeof(square) / sizeof(Vertex));
+	std::vector <GLuint> indSquare(indicesSquare, indicesSquare + sizeof(indicesSquare) / sizeof(GLuint));
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+
+	//std::vector <Texture> sunTex(textureLight, textureLight + sizeof(textureLight) / sizeof(Texture));
+	
+	Shader shaderProgramModel("shaders/model.vert", "shaders/multiLight.frag");
+
+	Model ourModel(std::string("resources/models/backpack/backpack.obj")); // backpack model using main shader program
+
+	Mesh floor(vertsSquare, indSquare, tex); // mesh for floor using main shader program
+
+	Shader shaderProgramLight("shaders/model.vert", "shaders/light.frag"); // shaders for light box
+
+	Mesh light(verts, ind, lTex); // mesh for light using light simple shader program
 	
 	// Enables openGL to check if something is in front of something else using depth testing before rendering
 	// enables z buffer 
@@ -226,119 +226,92 @@ int main() {
 		// in the order that  V_clip(clipped screen) =  projection * view * model * local 
 		// done in order right to left 
 
-		// now send all the matricies to create 3d display
+	
 
 
-		// uses the shader program and VAO and draws the triangle each frame
-		shaderProgramLighting.Activate();
-		// sets lighting color and object color to calculate final color of object in shader
+		shaderProgramLight.Activate();
 
-		// directional light
-		shaderProgramLighting.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		shaderProgramLighting.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		shaderProgramLighting.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-		shaderProgramLighting.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-		// point light 1
-		shaderProgramLighting.setVec3("pointLights[0].position", lightPositions[0]);
-		shaderProgramLighting.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-		shaderProgramLighting.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-		shaderProgramLighting.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-		shaderProgramLighting.setFloat("pointLights[0].constant", 1.0f);
-		shaderProgramLighting.setFloat("pointLights[0].linear", 0.09f);
-		shaderProgramLighting.setFloat("pointLights[0].quadratic", 0.032f);
-		// point light 2
-		shaderProgramLighting.setVec3("pointLights[1].position", lightPositions[1]);
-		shaderProgramLighting.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-		shaderProgramLighting.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-		shaderProgramLighting.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-		shaderProgramLighting.setFloat("pointLights[1].constant", 1.0f);
-		shaderProgramLighting.setFloat("pointLights[1].linear", 0.09f);
-		shaderProgramLighting.setFloat("pointLights[1].quadratic", 0.032f);
-		// point light 3
-		shaderProgramLighting.setVec3("pointLights[2].position", lightPositions[2]);
-		shaderProgramLighting.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-		shaderProgramLighting.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-		shaderProgramLighting.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-		shaderProgramLighting.setFloat("pointLights[2].constant", 1.0f);
-		shaderProgramLighting.setFloat("pointLights[2].linear", 0.09f);
-		shaderProgramLighting.setFloat("pointLights[2].quadratic", 0.032f);
-		// point light 4
-		shaderProgramLighting.setVec3("pointLights[3].position", lightPositions[3]);
-		shaderProgramLighting.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-		shaderProgramLighting.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-		shaderProgramLighting.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-		shaderProgramLighting.setFloat("pointLights[3].constant", 1.0f);
-		shaderProgramLighting.setFloat("pointLights[3].linear", 0.09f);
-		shaderProgramLighting.setFloat("pointLights[3].quadratic", 0.032f);
-		// spotlight
-		shaderProgramLighting.setVec3("spotLight.position", camera.Position);
-		shaderProgramLighting.setVec3("spotLight.direction", camera.Front);
+		// light box model placed in scene
+		glm::mat4 lightbulb = glm::mat4(1.0f);
+		lightbulb = glm::translate(lightbulb, glm::vec3(3.0f, 3.0f, 3.0f)); // translate so its not at the center
+		lightbulb = glm::scale(lightbulb, glm::vec3(1.0f, 1.0f, 1.0f));	// scale so it looks the right size for scene
+		shaderProgramLight.setMat4("model", lightbulb);
+		light.Draw(shaderProgramLight); // draws lightbulb in scene
 
+		shaderProgramLight.setMat4("view", view);
+		shaderProgramLight.setMat4("projection", projection);
+		// set projection and view matrices for light shader program
+
+	
+		shaderProgramModel.Activate(); // switch over to model shader program
+
+		// SPOTLIGHT UNIFORMS
 		switch (flashlightOn)
 		{
 		case true:
-			shaderProgramLighting.setVec3("spotLight.ambient", 0.05f, 0.05f, 0.05f);
-			shaderProgramLighting.setVec3("spotLight.diffuse", 0.8f, 0.8f, 0.8f);
-			shaderProgramLighting.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+			shaderProgramModel.setVec3("spotLight.ambient", 0.05f, 0.05f, 0.05f);
+			shaderProgramModel.setVec3("spotLight.diffuse", 0.8f, 0.8f, 0.8f);
+			shaderProgramModel.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
 		
 			break;
 
 		case false:
 			// if false then spotlight values are 0
-			shaderProgramLighting.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-			shaderProgramLighting.setVec3("spotLight.diffuse", 0.0f, 0.0f, 0.0f);
-			shaderProgramLighting.setVec3("spotLight.specular", 0.0f, 0.0f, 0.0f);
+			shaderProgramModel.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+			shaderProgramModel.setVec3("spotLight.diffuse", 0.0f, 0.0f, 0.0f);
+			shaderProgramModel.setVec3("spotLight.specular", 0.0f, 0.0f, 0.0f);
 			break;
 				
 		}
+
 	
-		shaderProgramLighting.setFloat("spotLight.constant", 1.0f);
-		shaderProgramLighting.setFloat("spotLight.linear", 0.09f);
-		shaderProgramLighting.setFloat("spotLight.quadratic", 0.032f);
-		shaderProgramLighting.setFloat("spotLight.innerCutOff", glm::cos(glm::radians(10.5f)));
-		shaderProgramLighting.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(16.5f)));
-		// sets the number of  point lights 
-		shaderProgramLighting.setInt("pointLightCount", 4);
-		// sets shininess and view direction
-		shaderProgramLighting.setVec3("viewPos", camera.Position);
-		shaderProgramLighting.setFloat("material.shininess", 32.0f);
+		shaderProgramModel.setFloat("spotLight.constant", 1.0f);
+		shaderProgramModel.setFloat("spotLight.linear", 0.09f);
+		shaderProgramModel.setFloat("spotLight.quadratic", 0.032f);
+		shaderProgramModel.setFloat("spotLight.innerCutOff", glm::cos(glm::radians(10.5f)));
+		shaderProgramModel.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(16.5f)));
+		shaderProgramModel.setVec3("spotLight.position", camera.Position);
+		shaderProgramModel.setVec3("spotLight.direction", camera.Front);
+
+	
+		// DIRECTIONAL LIGHT UNIFORMS
+		
+		shaderProgramModel.setVec3("dirLight.ambient", 0.2f, 0.2f, 0.2f);
+		shaderProgramModel.setVec3("dirLight.diffuse", 0.6f, 0.6f, 0.6f);
+		shaderProgramModel.setVec3("dirLight.specular", 0.8f, 0.8f, 0.8f);
+		shaderProgramModel.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		shaderProgramModel.setFloat("material.shininess", 36.0f);
+		shaderProgramModel.setVec3("viewPos", camera.Position);
+		
+		// POINT LIGHT UNIFORMS
+		shaderProgramModel.setVec3("pointLights[0].position", 3.0f, 3.0f, 3.0f);
+		shaderProgramModel.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		shaderProgramModel.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		shaderProgramModel.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		shaderProgramModel.setFloat("pointLights[0].constant", 1.0f);
+		shaderProgramModel.setFloat("pointLights[0].linear", 0.09f);
+		shaderProgramModel.setFloat("pointLights[0].quadratic", 0.032f);
+		shaderProgramModel.setInt("pointLightCount", 1);
+
+		shaderProgramModel.setMat4("view", view);
+		shaderProgramModel.setMat4("projection", projection);
 
 
-		shaderProgramLighting.setMat4("view", view);
-		shaderProgramLighting.setMat4("projection", projection);
+		// backpack model placed in scene
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		shaderProgramModel.setMat4("model", model);
+		ourModel.Draw(shaderProgramModel);
 
-		for (unsigned int i = 0; i < 10; i++)
-		{
-			// calculate the model matrix for each object and pass it to shader before drawing
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]); // translates model matrix to positon of cube
-			float angle = 20.0f * i;
-			if (i % 3 == 0)
-			{// every third cube spins
-				angle = currentFrame* 25.0f;
-			}
-			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			shaderProgramLighting.setMat4("model", model);
-			
-			box.Draw(shaderProgramLighting);
-		};
-		// shader for light bulb is used
-		shaderProgramLightbulb.Activate();
+		// floor placed into scene
+		glm::mat4 floorModel = glm::mat4(1.0f);
+		floorModel = glm::rotate(floorModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // rotate so its in correct orientation
+		floorModel = glm::translate(floorModel, glm::vec3(0.0f, 0.0f, 3.0f)); // move below model
+		floorModel = glm::scale(floorModel, glm::vec3(30.0f, 30.0f, 30.0f)); // scale
+		shaderProgramModel.setMat4("model", floorModel);
+		floor.Draw(shaderProgramModel);
 
-		shaderProgramLightbulb.setMat4("view", view);
-		shaderProgramLightbulb.setMat4("projection", projection);
-
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			// moves the model matrix by vector, scales the lightbulb cube down to 0.2 times size
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, lightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.2f));
-			
-			shaderProgramLightbulb.setMat4("model", model);
-
-			lightBox.Draw(shaderProgramLightbulb);
-		}
 
 		// swaps buffers so you can see triangles
 		glfwSwapBuffers(window);
@@ -351,9 +324,8 @@ int main() {
 
 	// deletes the vertex array, buffer and shader program after it is no longer being used
 	
-	shaderProgramLighting.Delete();
-	shaderProgramLightbulb.Delete();
-
+	shaderProgramModel.Delete();
+	shaderProgramLight.Delete();
 
 	// destroys the window and terminates GLFW before ending the program 
 	glfwDestroyWindow(window);
