@@ -306,6 +306,7 @@
     <None Include="shaders\multiLight.frag" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="D:\downloads\sun.jpg" />
     <Image Include="D:\downloads\sun.png" />
     <Image Include="resources\textures\field.jpg" />
     <Image Include="resources\textures\floor_diff.jpg" />
@@ -313,7 +314,7 @@
     <Image Include="resources\textures\god.PNG" />
     <Image Include="resources\textures\Image.jpg" />
     <Image Include="resources\textures\its_sahur_over.png" />
-    <Image Include="resources\textures\sun.png" />
+    <Image Include="resources\textures\sun.jpg" />
     <Image Include="resources\textures\tttsahur.jpg" />
     <Image Include="resources\textures\tttsahurSpecMap.jpg" />
     <Image Include="resources\textures\xin_pao.jpg" />

@@ -299,7 +299,8 @@
     <Image Include="D:\downloads\sun.png" />
     <Image Include="resources\textures\floor_diff.jpg" />
     <Image Include="resources\textures\floor_spec.png" />
-    <Image Include="resources\textures\sun.png" />
+    <Image Include="D:\downloads\sun.jpg" />
+    <Image Include="resources\textures\sun.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\verticies.txt" />
