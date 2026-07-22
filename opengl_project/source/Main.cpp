@@ -11,7 +11,7 @@ void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
+void framebuffer_size_callback(GLFWwindow* window, int width, int hight);
 
 const unsigned int SCR_HIGHT = 600u;
 const unsigned int SCR_WIDTH = 800u;
@@ -62,7 +62,7 @@ int main() {
 	// creates a pointer to a GLFWwindow object which contains information about the window
 	// contains the resolution of the window and the window name
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HIGHT, "OpenGL window", NULL, NULL);
-
+	
 	//error check if the window fails to create
 	if (window == NULL) {
 		std::cout << "Failed to create window " << std::endl;
@@ -81,6 +81,8 @@ int main() {
 	glfwSetScrollCallback(window, scroll_callback);
 	// sets keybourd callback function that activates everytime you press a keybourd button
 	glfwSetKeyCallback(window, key_callback);
+	// sets frambuffer callback for window resizing
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// loads glad so it configures OpenGL
 	gladLoadGL();
@@ -487,32 +489,34 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_F && action == GLFW_PRESS)
-	{ // stops the flashlight from continually turning on and off when key is held down with the
-		// heldDown buffer bool variable
 
-		switch (heldDown)
-		{
-		case false:
-
-			flashlightOn = !flashlightOn;
-		
-			heldDown = true;
-			
-			break;
-
-		case true:
-
-			break;
-
-		}
+	if (key == GLFW_KEY_F && action == GLFW_PRESS) 
+	{ // switches flashlight on and off
+		flashlightOn = !flashlightOn;
 	}
 
-	if (key == GLFW_KEY_F && action == GLFW_RELEASE)
+	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) 
 	{
-		heldDown = false;
-	}
 
+		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+		// video mode of  primary monitor (for fullscreen and borderless)
+		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+		if (glfwGetWindowMonitor(window) == NULL)
+		{ // if not in fullscreen (so no getwindowmonitor == NULL) then makes it fullscreen on primary monitor
+			glfwSetWindowMonitor(window, primaryMonitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		}
+		else
+		{ // if in fullscreen then makes it not fullscreen
+			glfwSetWindowMonitor(window, NULL, 100, 100, SCR_WIDTH, SCR_HIGHT, mode->refreshRate);
+		}
+
+	}
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int hight)
+{
+	// sets appropriate viewport when window is resized
+	glViewport(0, 0, width, hight);
 }
 
 
